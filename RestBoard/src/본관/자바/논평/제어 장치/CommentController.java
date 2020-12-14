@@ -13,16 +13,27 @@ import org.springframework.web.bind.annotation.RequestParam;
 import comment.entity.Comment;
 import comment.service.CommentService;
 
-@Controller
+@Controller@RestController
 public class CommentController {
 	@Autowired
 	CommentService cs;
 	
+	//댓글리스트
+	@GetMapping("/comment/{num}")
+	public List<Comment> getComment(@PathVariable(value="num") int num) {
+		System.out.println("댓글 등록");
+		return cs.get_comment(num);
+	}
+	
+	//댓글 쓰기
 	@PostMapping("/comment/{num}")
-	public String insert_comment(Model model,@PathVariable(value="num") int num,Comment comment,HttpServletRequest req) {
-		cs.insert_commentservice(num, comment,req);
-		
-		return "redirect:/board/"+num;
+	public void insertComment(@PathVariable(value="num") int num,@RequestBody Map<String,Object> params) {
+		System.out.println("댓글 등록");
+		Comment comment = new Comment();
+		comment.setWriter((String)params.get("writer"));
+		comment.setContent((String)params.get("content"));
+		cs.insert_commentservice(num, comment);
 	}
 	
 }
+
