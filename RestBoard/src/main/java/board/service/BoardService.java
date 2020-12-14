@@ -51,7 +51,7 @@ public class BoardService {
 	}
 	
 	//�Խñ� ��������
-	public long count_page() {
+	public int count_page() {
 		double count=(double)br.count();
 		int page=(int)Math.ceil(count/BLOCK_PAGE);
 		
@@ -67,7 +67,7 @@ public class BoardService {
 	}
 	
 	//�Խñ� �ۼ� ����
-	public void insert_board(Board board,HttpServletRequest req) {
+	public void insert_board(Board board) {
 		Date date=new Date();
 		SimpleDateFormat format=new SimpleDateFormat("yyyy:MM:dd HH:mm:ss ");
 		String time=format.format(date);
@@ -87,14 +87,14 @@ public class BoardService {
 		String time=format.format(date);
 		
 		try {
-			brd.setRegDate(format.parse(time));
+			board.setRegDate(format.parse(time));
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		brd.setTitle(board.getTitle());
-		brd.setContent(board.getContent());
-		brd.setHeading(board.getHeading());
-		br.save(brd);
+		
+		board.setRead_cnt(brd.getRead_cnt());
+		board.setReview_cnt(brd.getReview_cnt());
+		br.save(board);
 	}
 	
 	public void delete_board(int num) {
