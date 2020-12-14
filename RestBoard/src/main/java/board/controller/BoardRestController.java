@@ -24,71 +24,66 @@ import board.service.BoardService;
 import comment.entity.Comment;
 import comment.service.CommentService;
 
-@Controller
-public class BoardController {
+@RestController
+public class BoardRestController {
 	@Autowired
 	BoardService bsr;
-	@Autowired
-	CommentService csr;
 	
-	
-	@GetMapping({"/","/board"})
-	public String GetBoardList (Model model,@RequestParam(value="page",defaultValue="1") int page) {
-		System.out.println("게시판");
-		
+	//완 게시물 리스트
+	@GetMapping("/board")
+	public Page<Board> GetBoardList (@RequestParam(value="page",defaultValue="1") int page) {
+		System.out.println("게시판 리스트");
 		Page<Board> BoardList=bsr.getBoardList(page);
-		model.addAttribute("boardList",BoardList);
-		model.addAttribute("pageCnt",bsr.count_page());
 		
-		return "board/BoardList";
-
+		return BoardList;
+	}
+	//완 페이지 수 
+	@SuppressWarnings("unchecked")
+	@GetMapping("/board/page")
+	public JSONObject GetPage() {
+		JSONObject data=new JSONObject();
+		String page=Integer.toString(bsr.count_page());
+		data.put("page", page);
+		return data;
 	}
 	
-	@GetMapping("/board/{num}")
-	public String GetBoard(Model model,@PathVariable(value="num") int num) {
-		System.out.println("게시판 상세보기");
-		model.addAttribute("board",bsr.getBoard(num));
-		List<Comment> comment=csr.get_comment(num);
-		model.addAttribute("comment",csr.get_comment(num));
-		return "board/getBoard";
-	}
-	
-	@GetMapping("/insertBoard")
-	public String InsertBoard(Model model) {
-		System.out.println("글 쓰기 이동");
-		return "board/insertBoard";
-	}
-	
+	//완
 	@PostMapping("/board/post")
-	public String insert_board(Model model,Board board,HttpServletRequest req) {
+	public void insert_board(Board board,@RequestBody Map<String,Object> params) {
 		System.out.println("게시글 작성");
-		bsr.insert_board(board,req);
-		return "redirect:/board";
+		board.setContent((String)params.get("content"));
+		board.setHeading((String)params.get("heading"));
+		board.setName((String)params.get("name"));
+		board.setTitle((String)params.get("title"));
+		
+		bsr.insert_board(board);
 	}
 	
-
+	//완 댓글은 코멘트 컨트롤러에서
 	@GetMapping("/board/post/{num}")
-	public String UpdateBoard(Model model,@PathVariable(value="num") int num) {
-		System.out.println("게시글 수정 페이지 이동");
-		model.addAttribute("board",bsr.getBoard(num));
-		return "board/updateBoard";
+	public Board GetBoard(@PathVariable(value="num") int num) {
+		System.out.println("게시판 상세보기");
+		return bsr.getBoard(num);
 	}
+		
 	
-
+	//완
 	@PutMapping("/board/post/{num}")
-	public String update_board(Model model,Board board,@PathVariable("num") int num) {
+	public void update_board(Board board,@PathVariable("num") int num,@RequestBody Map<String,Object> params) {
 		System.out.println("게시글 수정");
+		board.setNum(num);
+		board.setContent((String)params.get("content"));
+		board.setHeading((String)params.get("heading"));
+		board.setName((String)params.get("name"));
+		board.setTitle((String)params.get("title"));
 		bsr.update_board(board);
-		
-		return "redirect:/board/";
 	}
 		
+	//완
 	@DeleteMapping("/board/post/{num}")
-	public String delete_board(Model model,@PathVariable(value="num") int num) {
+	public void delete_board(Model model,@PathVariable(value="num") int num) {
 		System.out.println("게시글 삭제");
 		bsr.delete_board(num);
-		
-		return "redirect:/board/";
 	}
 	
 	@GetMapping("/board/search")
