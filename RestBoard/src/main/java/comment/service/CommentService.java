@@ -23,14 +23,10 @@ public class CommentService {
 	@Autowired
 	BoardRepository br;
 	
-	public void insert_commentservice(int num,Comment comment,HttpServletRequest req) {
+	public void insert_commentservice(int num,Comment comment) {
 		Board board=br.findBynum(num);
 		board.setReview_cnt(board.getReview_cnt()+1);
 		br.save(board);		//��� ���� ����
-		
-		String writer="dd";
-		
-		comment.setWriter(writer);
 		
 		Date date=new Date();
 		SimpleDateFormat format=new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
@@ -40,6 +36,16 @@ public class CommentService {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
+		comment.setPostNum(num);
+		cr.save(comment);
+	}
+	
+	public List<Comment> get_comment(int num) {
+		System.out.println(num);
+		return cr.findBypostNum(num);
+	}
+}
+
 		comment.setPostNum(num);
 		cr.save(comment);
 	}
