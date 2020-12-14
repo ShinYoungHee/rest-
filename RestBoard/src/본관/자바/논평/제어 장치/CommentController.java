@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import comment.entity.Comment;
 import comment.service.CommentService;
 
-@Controller@RestController
+@RestController
 public class CommentController {
 	@Autowired
 	CommentService cs;
