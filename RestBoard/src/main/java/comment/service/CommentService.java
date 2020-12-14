@@ -16,7 +16,7 @@ import board.repository.BoardRepository;
 import comment.entity.Comment;
 import comment.repository.CommentRepository;
 
-@Service
+@Service@@Service
 public class CommentService {
 	@Autowired
 	CommentRepository cr;
@@ -42,17 +42,6 @@ public class CommentService {
 	
 	public List<Comment> get_comment(int num) {
 		System.out.println(num);
-		return cr.findBypostNum(num);
-	}
-}
-
-		comment.setPostNum(num);
-		cr.save(comment);
-	}
-	
-	public List<Comment> get_comment(int num) {
-		System.out.println(num);
-		List<Comment> list=cr.findBypostNum(num);
 		return cr.findBypostNum(num);
 	}
 }
